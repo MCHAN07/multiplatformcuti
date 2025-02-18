@@ -1,0 +1,29 @@
+version: 1.0
+
+workflows:
+  ios-android:
+    name: Build Android and iOS App
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      xcode: latest
+      java: openjdk11
+    scripts:
+      - name: Install dependencies
+        script: |
+          cd iosApp
+          pod install
+          cd ..
+      - name: Build Android
+        script: |
+          cd androidApp
+          ./gradlew assembleRelease
+          cd ..
+      - name: Build iOS
+        script: |
+          cd iosApp
+          xcodebuild -scheme iosApp -sdk iphonesimulator -configuration Release
+          cd ..
+    artifacts:
+      - build/iosApp/*.ipa
+      - build/androidApp/*.apk
